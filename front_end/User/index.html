@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>민원 접수</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="colorful-header">
+            <h1>OO기관 민원 접수</h1>
+            <p>소중한 의견을 듣겠습니다.</p>
+        </header>
+
+        <main>
+            <form id="complaint-form" class="complaint-form modern-form">
+                
+                <fieldset class="form-group auth-section">
+                    <legend class="section-legend">1. 신청인 정보</legend>
+                    
+                    <label for="author">작성자 <span class="required-star">*</span></label>
+                    <input type="text" id="author" name="author" placeholder="작성자 성명을 입력하세요" required>
+
+                    <label for="phone">전화번호 <span class="required-star">*</span></label>
+                    <input type="text" id="phone" name="phone" placeholder="'-' 없이 숫자만 입력 (예: 01012345678)" required>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <legend class="section-legend">2. 민원 내용</legend>
+                    
+                    <label for="category">민원 유형 <span class="required-star">*</span></label>
+                    <select id="category" name="category" required>
+                        <option value="">유형을 선택하세요</option>
+                        <option value="policy_suggestion">정책 제안 💡</option>
+                        <option value="inconvenience">불편 신고 ⚠️</option>
+                        <option value="corruption">부패/공익 신고 🚨</option>
+                        <option value="data_request">정보 공개 청구 📄</option>
+                        <option value="other">기타 문의 ❓</option>
+                    </select>
+
+                    <label for="title">제목 <span class="required-star">*</span></label>
+                    <input type="text" id="title" name="title" placeholder="민원 제목을 입력하세요 (예: 도로 파손 신고)" required>
+
+                    <label for="content">상세 내용 <span class="required-star">*</span></label>
+                    <textarea id="content" name="content" rows="15" placeholder="민원 내용을 상세하고 명확하게 작성해주세요." required></textarea>
+
+                    <label for="attachment">첨부 파일</label>
+                    <input type="file" id="attachment" name="attachment">
+                    <small class="file-info-text">* 10MB 이하의 HWP, PDF, JPG, PNG 파일만 첨부 가능합니다.</small>
+                </fieldset>
+
+                <fieldset class="form-group agreement">
+                    <legend class="section-legend">3. 개인정보 수집 및 이용 동의 <span class="required-star">*</span></legend>
+                    <div class="agreement-box">
+                        <p>「개인정보보호법」 제15조 및 제22조에 따라 민원 처리를 위해 다음과 같이 개인정보를 수집 및 이용합니다.</p>
+                        <ul>
+                            <li>수집 항목: 성명, 연락처, 민원 내용 내 개인정보</li>
+                            <li>수집 목적: 민원 접수 및 처리, 처리 결과 회신, 통계 분석</li>
+                            <li>보유 및 이용 기간: 민원 처리 완료 후 3년</li>
+                        </ul>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="agree" name="agree" required>
+                        <label for="agree">위 개인정보 수집 및 이용에 동의합니다.</label>
+                    </div>
+                </fieldset>
+
+                <div class="submit-area">
+                    <button type="submit" class="btn submit-btn primary-btn large-btn">민원 제출하기</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <div id="success-modal-overlay" class="success-modal-overlay">
+        <div class="success-modal-content">
+            <span class="success-modal-icon">🎉</span>
+            <h3>접수 완료</h3>
+            <p>소중한 의견을 제출해주셔서 감사합니다.</p>
+            <button id="close-success-modal" class="btn primary-btn">확인</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
