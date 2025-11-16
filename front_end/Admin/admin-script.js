@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let allComplaintsData = []; 
     let filteredData = []; 
     let currentPage = 1;
-    const itemsPerPage = 6; 
+    const itemsPerPage = 8; 
 
     // --- 1. 유형(Category) 번역기 ---
     const categoryMap = {
@@ -118,7 +118,9 @@ document.addEventListener("DOMContentLoaded", function() {
     function renderDashboardTable() {
         if (!dashboardTbody) return;
         dashboardTbody.innerHTML = "";
-        const pageData = allComplaintsData.slice(0, 8); 
+        // (가장 최근 데이터 8개)
+        const pageData = allComplaintsData.slice(0, 7); 
+        // createTableRow 함수를 바로 호출
         pageData.forEach(item => dashboardTbody.appendChild(createTableRow(item)));
     }
 
@@ -129,11 +131,12 @@ document.addEventListener("DOMContentLoaded", function() {
         const start = (page - 1) * itemsPerPage;
         const end = page * itemsPerPage;
         const pageData = data.slice(start, end);
+        // createTableRow 함수를 바로 호출
         pageData.forEach(item => allComplaintsTbody.appendChild(createTableRow(item)));
     }
 
     // --- 4-1. <tr> 생성 헬퍼 함수 ---
-    function createTableRow(item) {
+    function createTableRow(item) { // 'includeCheckbox' 파라미터 제거
         const statusClass = getStatusClass(item.status);
         const deptClass = getDeptClass(item.dept);
         
@@ -144,6 +147,7 @@ document.addEventListener("DOMContentLoaded", function() {
         
         const row = document.createElement("tr");
         
+        // (데이터셋 설정은 기존과 동일)
         row.dataset.id = item.id;
         row.dataset.author = item.author; 
         row.dataset.phone = item.phone;
@@ -159,10 +163,19 @@ document.addEventListener("DOMContentLoaded", function() {
         row.dataset.aiSummary = item.ai_summary; 
         row.dataset.attachment = item.attachment;
         row.dataset.devilComplaint = item.is_devil_complaint;
+        row.dataset.isHidden = item.is_hidden;
+        // ---
 
         const displayDept = item.dept === "배정 안 함" ? "-" : item.dept;
+        
         const displayId = (item.id || "N/A");
 
+        // ✅ '주의사항' 내용 결정 (유연한 검사)
+        const devilValue = item.is_devil_complaint;
+        const isDevil = (devilValue === true || devilValue === 1 || String(devilValue).toLowerCase() === 'true');
+        const warningContent = isDevil ? '💀' : '';
+
+        // ✅ 'if'문 제거, 8개 열로 통일 (체크박스 셀 제거)
         row.innerHTML = `
             <td><span class="status ${statusClass}">${item.status}</span></td>
             <td>${displayId}</td> 
@@ -171,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function() {
             <td>${applicantMasked}</td>
             <td>${item.date}</td>
             <td><span class="dept ${deptClass}">${displayDept}</span></td>
-        `;
+            <td>${warningContent}</td> `;
         
         return row;
     }
