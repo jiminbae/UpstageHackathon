@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OO기관 - 민원 관리 시스템</title>
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header"><h2><i class="fas fa-tasks"></i> 민원 관리 시스템</h2></div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><a href="#" id="nav-dashboard"><i class="fas fa-tachometer-alt"></i> 대시보드</a></li>
+                    <li><a href="#" id="nav-all-complaints"><i class="fas fa-list-check"></i> 전체 민원 목록</a></li>
+                    <li><a href="#"><i class="fas fa-chart-bar"></i> 통계/리포트</a></li>
+                    <li><a href="#"><i class="fas fa-users-cog"></i> 담당자 관리</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> 시스템 설정</a></li>
+                    <li><a href="#"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer"><p>&copy; 2025 OO 공공기관</p></div>
+        </aside>
+
+        <div class="main-content">
+            <header class="main-header">
+                <div class="header-left"><h2 id="main-title">대시보드</h2></div>
+                <div class="header-right">
+                    <input type="search" id="main-search-input" placeholder="민원 ID 또는 작성자 검색...">
+                    <div class="user-profile"><img src="hobanwoo.png" alt="프로필 사진"><span>호반우 담당자님</span></div>
+                </div>
+            </header>
+
+            <main id="page-dashboard">
+                <section class="dashboard-cards">
+                    <div class="card card-new"><h3><i class="fas fa-bell"></i> 신규 접수</h3><p id="dashboard-count-new">0건</p><span class="card-description">즉시 확인 필요</span></div>
+                    <div class="card card-processing"><h3><i class="fas fa-sync-alt fa-spin"></i> 처리 중</h3><p id="dashboard-count-processing">0건</p><span class="card-description">부서 배정 완료</span></div>
+                    <div class="card card-completed"><h3><i class="fas fa-check-circle"></i> 처리 완료</h3><p id="dashboard-count-completed">0건</p><span class="card-description">이번 주 완료</span></div>
+                    <div class="card card-pending"><h3><i class="fas fa-hourglass-half"></i> 답변 대기</h3><p id="dashboard-count-pending">0건</p><span class="card-description">답변 검토 중</span></div>
+                </section>
+                <section class="complaint-list modern-table-container">
+                    <h3>최근 접수된 민원</h3>
+                    <table class="complaint-table">
+                        <thead><tr><th>상태</th><th>민원 ID</th><th>유형</th><th>제목</th><th>작성자</th><th>접수일</th><th>담당부서</th><th>악성/스팸</th></tr></thead>
+                        <tbody id="dashboard-recent-tbody"></tbody>
+                    </table>
+                </section>
+            </main>
+            
+            <main id="page-all-complaints" style="display: none;">
+                <section class="filter-bar">
+                    <select id="filter-status">
+                        <option value="">전체 상태</option>
+                        <option value="신규 접수">신규 접수</option>
+                        <option value="처리 중 (부서 배정)">처리 중 (부서 배정)</option>
+                        <option value="답변 대기">답변 대기</option>
+                        <option value="답변 완료">답변 완료</option>
+                    </select>
+                    <select id="filter-category">
+                        <option value="">전체 유형</option>
+                        <option value="policy_suggestion">정책 제안</option>
+                        <option value="inconvenience">불편 신고</option>
+                        <option value="corruption">부패/공익 신고</option>
+                        <option value="data_request">정보 공개 청구</option>
+                        <option value="other">기타 문의</option>
+                    </select>
+                    <input type="date" id="filter-date-start">
+                    <span>~</span>
+                    <input type="date" id="filter-date-end">
+                    <button class="btn btn-primary primary-btn small-btn" id="filter-button">조회</button>
+                </section>
+                <section class="complaint-list modern-table-container">
+                    <h3>전체 민원 (총 <span id="total-complaints-count">0</span>건)</h3>
+                    <table class="complaint-table" id="all-complaints-table">
+                        <thead><tr><th>상태</th><th>민원 ID</th><th>유형</th><th>제목</th><th>작성자</th><th>접수일</th><th>담당부서</th><th>악성/스팸</th></tr></thead>
+                        <tbody id="all-complaints-tbody"></tbody>
+                    </table>
+                    <div class="pagination" id="pagination-controls"></div>
+                </section>
+            </main>
+        </div>
+
+        <div id="complaint-modal" class="modal-overlay">
+            <div class="modal-content">
+                <header class="modal-header">
+                    <h2>민원 상세 및 처리</h2>
+                    <button class="close-modal" id="close-modal-btn">&times;</button>
+                </header>
+
+                <section class="modal-body modal-body-grid"> 
+                    
+                    <div class="modal-info">
+                        <h3>민원 상세 내용</h3>
+                        
+                        <div id="devil-complaint-warning" class="devil-warning-overlay" style="display: none;">
+                            <div class="devil-warning-content">
+                                <p>🚨 해당 민원은 악성 민원일 가능성이 높습니다.<br>내용을 확인하시겠습니까?</p>
+                                <button id="show-devil-content-btn" class="btn btn-danger">내용 표시</button>
+                            </div>
+                        </div>
+                        <p><strong>민원 ID:</strong> <span id="modal-id"></span></p>
+                        <p><strong>작성자:</strong> <span id="modal-applicant"></span></p>
+                        <p><strong>연락처:</strong> <span id="modal-phone"></span></p>
+                        <p><strong>유형:</strong> <span id="modal-category"></span></p>
+                        <p><strong>제목:</strong> <span id="modal-title"></span></p>
+                        <p><strong>상세 내용:</strong></p>
+                        <div class="modal-complaint-content" id="modal-content"></div>
+                       <p id="modal-attachment-row" style="display: none;">
+                            <strong>첨부 파일:</strong> <a href="#" id="modal-attachment-link" class="file-link" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-alt"></i></a>
+                       </p>
+                    </div>
+                    
+                    <div class="modal-right-column">
+                        
+                        <div class="processing-area">
+                            <h3>민원 처리</h3>
+                            <div class="processing-grid-split">
+                                <div class="action-group">
+                                    <label for="status-select">처리 상태 변경 <span class="required-star">*</span></label>
+                                    <select id="status-select">
+                                        <option value="신규 접수">신규 접수</option>
+                                        <option value="처리 중 (부서 배정)">처리 중 (부서 배정)</option>
+                                        <option value="답변 대기">답변 대기</option>
+                                        <option value="답변 완료">답변 완료</option>
+                                    </select>
+                                </div>
+                                <div class="action-group">
+                                    <label for="assign-dept">담당 부서 배정 <span class="required-star">*</span></label>
+                                    <select id="assign-dept">
+                                        <option value="">배정 안 함</option>
+                                        <optgroup label="기획경제국">
+                                            <option value="기획전략과">기획전략과</option>
+                                            <option value="디지털정보과">디지털정보과</option>
+                                            <option value="홍보미디어과">홍보미디어과</option>
+                                            <option value="일자리지원과">일자리지원과</option>
+                                            <option value="경제지원과">경제지원과</option>
+                                        </optgroup>
+                                        <optgroup label="행정교육국">
+                                            <option value="총무과">총무과</option>
+                                            <option value="평생교육과">평생교육과</option>
+                                            <option value="종합민원과">종합민원과</option>
+                                            <option value="세무과">세무과</option>
+                                            <option value="징수과">징수과</option>
+                                            <option value="회계과">회계과</option>
+                                        </optgroup>
+                                        <optgroup label="복지증진국">
+                                            <option value="복지정책과">복지정책과</option>
+                                            <option value="어르신장애인과">어르신장애인과</option>
+                                            <option value="아동가족과">아동가족과</option>
+                                            <option value="행복나눔과">행복나눔과</option>
+                                            <option value="위생과">위생과</option>
+                                        </optgroup>
+                                        <optgroup label="문화환경국">
+                                            <option value="문화관광과">문화관광과</option>
+                                            <option value="체육청소년과">체육청소년과</option>
+                                            <option value="교통행정과">교통행정과</option>
+                                            <option value="주차관리과">주차관리과</option>
+                                            <option value="청소과">청소과</option>
+                                            <option value="기후환경과">기후환경과</option>
+                                        </optgroup>
+                                        <optgroup label="도시창조국">
+                                            <option value="도시디자인과">도시디자인과</option>
+                                            <option value="공원녹지과">공원녹지과</option>
+                                            <option value="안전도시과">안전도시과</option>
+                                            <option value="건설과">건설과</option>
+                                            <option value="건축과">건축과</option>
+                                            <option value="토지정보과">토지정보과</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                        </div> 
+                        
+                        <div class="ai-area">
+                            <h3>AI Agent 분석</h3>
+                            <div class="ai-grid-split">
+                                <div class="ai-box ai-analysis-info">
+                                    <p class="ai-label">🤖 AI 추천 부서</p>
+                                    <span class="value" id="ai-rec-dept"></span>
+                                    <p class="ai-label" style="margin-top: 20px;">🙂 해당 글의 분위기</p>
+                                    <span class="value" id="ai-emotion"></span>
+                                    <p class="ai-label" style="margin-top: 20px;">🔑 핵심 키워드</p>
+                                    <ul id="ai-keywords"></ul>
+                                </div>
+                                <div class="ai-box ai-summary-related">
+                                    <p class="ai-label ai-summary-title"><i class="fas fa-brain"></i> AI 에이전트 기반 민원 요약</p>
+                                    <div class="ai-summary-box" id="ai-summary">
+                                        <span class="ai-summary-box-placeholder">AI 요약 정보가 없습니다.</span>
+                                    </div>
+                                    <p class="ai-label" style="margin-top: 20px;">🔗 유사 민원 목록 (ID)</p>
+                                    <ul id="ai-related-ids"></ul>
+                                    <p class="ai-label" style="margin-top: 20px;">📈 민원 이력 횟수</p>
+                                    <span class="count" id="ai-prev-count"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </section>
+                <footer class="modal-footer">
+                    <button class="btn btn-secondary" id="cancel-btn">취소</button>
+                    <button class="btn btn-primary primary-btn" id="submit-reply-btn">처리 완료</button>
+                </footer>
+            </div>
+        </div>
+
+    </div>
+    <script src="admin-script.js"></script>
+    <div id="image-viewer-modal-overlay" class="image-viewer-modal-overlay">
+        <div class="image-viewer-modal-content">
+            <span class="close-image-viewer-modal">&times;</span>
+            <img id="image-viewer-modal-img" src="" alt="첨부 이미지" class="image-viewer-modal-img">
+        </div>
+    </div>
+</body>
+</html>

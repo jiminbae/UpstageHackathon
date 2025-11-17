@@ -1,0 +1,311 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+/* 기본 스타일 초기화 및 설정 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
+    background: linear-gradient(to right, #ecf0f1, #dce4e6);
+    margin: 0;
+    padding: 20px;
+    color: #2c3e50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 850px;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 40px 50px;
+}
+
+/* 헤더 스타일 */
+.colorful-header {
+    text-align: center;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 25px;
+    margin-bottom: 40px;
+    position: relative;
+}
+.colorful-header h1 {
+    color: #34495e;
+    margin: 0;
+    font-size: 2.2em;
+    font-weight: 700;
+}
+.colorful-header p {
+    font-size: 1.15em;
+    color: #7f8c8d;
+    margin-top: 10px;
+}
+.colorful-header::before,
+.colorful-header::after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #2ecc71;
+    top: 15px;
+}
+.colorful-header::before {
+    left: 20px;
+    background-color: #f39c12;
+}
+.colorful-header::after {
+    right: 20px;
+    background-color: #3498db;
+}
+
+
+/* 폼 스타일 */
+.modern-form { width: 100%; }
+.form-group {
+    margin-bottom: 30px;
+    border: none;
+    padding: 0;
+    position: relative;
+}
+.section-legend {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: #34495e;
+    margin-bottom: 20px;
+    display: block;
+    border-left: 5px solid #3498db;
+    padding-left: 15px;
+    line-height: 1.2;
+}
+.description-text {
+    font-size: 0.95em;
+    color: #7f8c8d;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+/* 폼 요소 공통 스타일 */
+label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-size: 1em;
+    color: #34495e;
+}
+.required-star {
+    color: #e74c3c;
+    margin-left: 5px;
+}
+input[type="text"],
+select,
+textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1em;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #2c3e50;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input[type="text"]::placeholder,
+textarea::placeholder {
+    color: #a0a0a0;
+}
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.25);
+    background-color: #f8fcff;
+}
+textarea { resize: vertical; }
+input[type="file"] {
+    font-size: 0.95em;
+    padding: 10px 0;
+}
+.file-info-text {
+    display: block;
+    margin-top: 8px;
+    color: #7f8c8d;
+    font-size: 0.85em;
+}
+
+/* 버튼 공통 스타일 */
+.btn {
+    display: inline-block;
+    padding: 14px 25px;
+    font-size: 1em;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+.primary-btn {
+    background-color: #3498db;
+    color: white;
+}
+.primary-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+.secondary-btn {
+    background-color: #2ecc71;
+    color: white;
+}
+.secondary-btn:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+.submit-btn {
+    width: 100%;
+    font-size: 1.2em;
+    padding: 18px;
+    background-color: #f39c12;
+}
+.submit-btn:hover {
+    background-color: #e67e22;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+.submit-area {
+    text-align: center;
+    margin-top: 40px;
+}
+.large-btn {
+    padding: 16px 30px;
+    font-size: 1.15em;
+}
+
+/* 개인정보 동의 영역 */
+.agreement-box {
+    border: 1px solid #dce4e6;
+    background-color: #f8fcfd;
+    padding: 20px;
+    min-height: 120px;
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.agreement-box ul {
+    list-style: disc;
+    margin-left: 20px;
+    padding: 0;
+}
+.agreement-box p, .agreement-box li {
+    margin-bottom: 8px;
+    color: #555;
+}
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    accent-color: #3498db;
+    cursor: pointer;
+}
+.agreement label {
+    display: inline-block;
+    font-weight: normal;
+    font-size: 1em;
+    color: #2c3e50;
+    cursor: pointer;
+}
+
+/* (수정) ⬇️ 제출 완료 팝업 모달 스타일 */
+.success-modal-overlay {
+    /* ✅ display: flex 삭제 (중복 제거) */
+    display: none;  /* ⬅️ 기본 상태: 숨김 */
+    opacity: 0;
+    visibility: hidden;
+    
+    /* 전체 화면 덮기 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+
+    /* ✅ 중앙 정렬 (flex 속성만 유지) */
+    justify-content: center;
+    align-items: center;
+
+    /* 애니메이션 */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* JS로 .visible 클래스가 추가되면 보임 */
+.success-modal-overlay.visible {
+    display: flex;  /* ✅ visible일 때만 flex */
+    opacity: 1;
+    visibility: visible;
+}
+
+.success-modal-content {
+    background-color: white;
+    padding: 40px 50px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    
+    /* 팝업 애니메이션 */
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+/* .visible일 때 팝업 크기 복원 */
+.success-modal-overlay.visible .success-modal-content {
+    transform: scale(1);
+}
+
+.success-modal-icon {
+    font-size: 60px;
+    line-height: 1;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.success-modal-content h3 {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #34495e;
+    margin: 0 0 10px 0;
+}
+
+.success-modal-content p {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* 확인 버튼 스타일 */
+.success-modal-content .btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1em;
+}
