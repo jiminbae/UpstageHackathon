@@ -92,12 +92,12 @@ def split_json_file(file_path, output_prefix="dalseo", limit=5000, split_count=1
             suffix = ""
         
         # complaint 파일 저장
-        complaint_filename = f"/home/hwkang/hackathon_crawling/data/complaint/complaint_{output_prefix}{suffix}.json"
+        complaint_filename = f"/home/hwkang/hackathon_ws/data/complaint/complaint_{output_prefix}{suffix}.json"
         with open(complaint_filename, 'w', encoding='utf-8') as f:
             json.dump(complaints, f, ensure_ascii=False, indent=2)
         
         # answer 파일 저장
-        answer_filename = f"/home/hwkang/hackathon_crawling/data/answer/answer_{output_prefix}{suffix}.json"
+        answer_filename = f"/home/hwkang/hackathon_ws/data/answer/answer_{output_prefix}{suffix}.json"
         with open(answer_filename, 'w', encoding='utf-8') as f:
             json.dump(answers, f, ensure_ascii=False, indent=2)
         
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     parser.add_argument('--split-count', type=int, default=1, help='분할할 파일 개수 (기본값: 1)')
     args = parser.parse_args()
     
-    file_path = f'/home/hwkang/hackathon_crawling/data/raw/crawled_posts_{args.prefix}.json'
+    file_path = f'/home/hwkang/hackathon_ws/data/raw/crawled_posts_{args.prefix}.json'
 
     # 파일 존재 확인
     if not Path(file_path).exists():

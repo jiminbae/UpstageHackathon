@@ -355,7 +355,7 @@ async def update_complaint(complaint_id: str, update_data: ComplaintUpdate):
         raise HTTPException(status_code=500, detail=f"민원 처리 중 오류 발생: {str(e)}")
 
 # ✅ 이미지 저장 경로
-IMAGE_STORAGE_PATH = "/home/hwkang/hackathon_crawling/front_end/Admin/image_storage"
+IMAGE_STORAGE_PATH = "/home/hwkang/hackathon_ws/front_end/Admin/image_storage"
 
 os.makedirs(IMAGE_STORAGE_PATH, exist_ok=True)
 
