@@ -1,3 +1,5 @@
 data/
 front_end_jmbae
 venv/
+*/*.pyc
+__pycache__/
