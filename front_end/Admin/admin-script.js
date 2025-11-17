@@ -19,8 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const allComplaintsTbody = document.getElementById("all-complaints-tbody");
     const paginationControls = document.getElementById("pagination-controls");
     const totalComplaintsCount = document.getElementById("total-complaints-count");
-    const pageDashboard = document.getElementById("page-dashboard");
-    const pageAllComplaints = document.getElementById("page-all-complaints");
+    const pageDashboard = document.getElementById("page-all-complaints");
     const navDashboard = document.getElementById("nav-dashboard");
     const navAllComplaints = document.getElementById("nav-all-complaints");
     const mainTitle = document.getElementById("main-title");
@@ -59,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // --- 0-1. 대시보드 카운트 ---
+    // --- 0-1. 대시보드 카운트 (updateDashboardCounts 함수 수정) ---
     function updateDashboardCounts() {
         let newCount = 0, processingCount = 0, completedCount = 0, pendingCount = 0; 
         allComplaintsData.forEach(item => { 
@@ -68,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 case "처리 중 (부서 배정)": processingCount++; break;
                 case "답변 완료": completedCount++; break;
                 case "답변 대기": pendingCount++; break;
+                // "접수 반려"는 카운트하지 않음 (또는 별도 카드 추가 가능)
             }
         });
         if (dashboardCountNew) {
@@ -109,7 +109,8 @@ document.addEventListener("DOMContentLoaded", function() {
         "신규 접수": "status-new", 
         "처리 중 (부서 배정)": "status-processing", 
         "답변 완료": "status-completed", 
-        "답변 대기": "status-pending" 
+        "답변 대기": "status-pending",
+        "접수 반려": "status-rejected" // ✅ 추가
     }[status] || "");
     const getDeptClass = (dept) => (dept === "배정 안 함" ? "dept" : "dept-policy");
     const getCategoryDisplay = (categoryKey) => categoryMap[categoryKey] || categoryKey;
@@ -452,7 +453,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const selectedStatusText = statusSelect.options[statusSelect.selectedIndex].text;
         const selectedDeptText = assignDept.options[assignDept.selectedIndex].text;
         
-        if (selectedStatusText !== "신규 접수" && selectedDeptText === "배정 안 함") {
+        if ((selectedStatusText !== "신규 접수" && selectedStatusText !== "접수 반려") && selectedDeptText === "배정 안 함") {
             alert("처리 중 또는 답변 완료 시에는 반드시 담당 부서를 배정해야 합니다."); 
             return;
         }
