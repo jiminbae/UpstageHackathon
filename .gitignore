@@ -3,3 +3,4 @@ front_end_jmbae
 venv/
 *.pyc
 __pycache__/
+front_end/Admin/image_storage/
