@@ -1,173 +1,175 @@
 document.addEventListener("DOMContentLoaded", function() {
     
+    // --- 1. 민원 제출 기능 ---
     const form = document.getElementById("complaint-form");
-    
-    // 모달 팝업 요소
-    const successModalOverlay = document.getElementById("success-modal-overlay");
-    const closeSuccessModalBtn = document.getElementById("close-success-modal");
+    const successModal = document.getElementById("success-modal-overlay");
+    const closeSuccessBtn = document.getElementById("close-success-modal");
 
-    function showSuccessModal() {
-        if (successModalOverlay) {
-            // ✅ 1. display: flex 먼저 설정
-            successModalOverlay.style.display = 'flex';
-            
-            // ✅ 2. 리플로우 강제 (브라우저가 변경 사항 인식)
-            successModalOverlay.offsetHeight;
-            
-            // ✅ 3. visible 클래스 추가 (애니메이션 시작)
-            setTimeout(() => {
-                successModalOverlay.classList.add('visible');
-            }, 10);
-        }
-    }
-
-    function hideSuccessModal() {
-        if (successModalOverlay) {
-            // ✅ 1. visible 클래스 제거 (페이드아웃)
-            successModalOverlay.classList.remove('visible');
-            
-            // ✅ 2. 애니메이션 완료 후 display: none
-            setTimeout(() => {
-                successModalOverlay.style.display = 'none';
-            }, 300); 
-        }
-    }
-
-    if (closeSuccessModalBtn) {
-        closeSuccessModalBtn.addEventListener("click", hideSuccessModal);
-    }
-
-    if (successModalOverlay) {
-        successModalOverlay.addEventListener("click", function(event) {
-            if (event.target === successModalOverlay) {
-                hideSuccessModal();
-            }
-        });
-    }
-
-    // ✅ ESC 키로 모달 닫기 (보너스)
-    document.addEventListener("keydown", function(event) {
-        if (event.key === "Escape" && successModalOverlay.classList.contains('visible')) {
-            hideSuccessModal();
-        }
-    });
-
-    // ✅ 폼 제출 로직 (파일 업로드 방식)
-    form.addEventListener("submit", async function(event) {
-        event.preventDefault();
-
-        if (validateForm()) {
-            
-            const complaintData = {
-                author: document.getElementById("author").value,
-                phone: document.getElementById("phone").value,
-                category: document.getElementById("category").value,
-                title: document.getElementById("title").value,
-                content: document.getElementById("content").value,
-                attachment: null
-            };
-
-            const attachmentInput = document.getElementById("attachment");
-            const file = attachmentInput.files[0];
-
-            if (file) {
-                // 파일 크기 검증 (5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    alert(`파일이 너무 큽니다. (최대 5MB, 현재: ${(file.size / 1024 / 1024).toFixed(2)}MB)`);
-                    return;
-                }
-
-                // 파일 형식 검증
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                if (!allowedTypes.includes(file.type)) {
-                    alert("지원하지 않는 파일 형식입니다. (JPG, PNG, GIF, WebP만 가능)");
-                    return;
-                }
-
-                try {
-                    const imageUrl = await uploadImage(file);
-                    complaintData.attachment = imageUrl;
-                    sendData(complaintData);
-                } catch (error) {
-                    console.error("이미지 업로드 실패:", error);
-                    alert("이미지 업로드에 실패했습니다.");
-                }
-
-            } else {
-                sendData(complaintData);
-            }
-        }
-    });
-
-    // ✅ 이미지 업로드 함수
-    async function uploadImage(file) {
-        const formData = new FormData();
-        formData.append('file', file);
+    form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            author: document.getElementById("author").value,
+            phone: document.getElementById("phone").value,
+            category: document.getElementById("category").value,
+            title: document.getElementById("title").value,
+            content: document.getElementById("content").value,
+            attachment: "null", 
+            date: new Date().toISOString().split('T')[0],
+            status: "신규 접수",
+            dept: "배정 안 함",
+            is_devil_complaint: false
+        };
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/upload_image", {
+            const response = await fetch("http://127.0.0.1:8000/api/submit_complaint", {
                 method: "POST",
-                body: formData
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.detail || "이미지 업로드 실패");
+            if (response.ok) {
+                successModal.style.display = "flex"; 
+                form.reset();
+            } else {
+                alert("접수 중 오류가 발생했습니다.");
             }
-
-            const data = await response.json();
-            console.log("✅ 이미지 업로드 성공:", data.image_url);
-            
-            return data.image_url;
-
         } catch (error) {
-            console.error("❌ 이미지 업로드 오류:", error);
-            throw error;
+            console.error("Error:", error);
+            alert("서버 연결 실패");
         }
+    });
+
+    closeSuccessBtn.addEventListener("click", () => {
+        successModal.style.display = "none";
+    });
+
+    // --- 2. 접수 현황 조회 기능 ---
+    const openStatusBtn = document.getElementById("open-status-modal-btn");
+    const statusModal = document.getElementById("status-modal");
+    const closeStatusBtn = document.getElementById("close-status-modal-btn");
+    const lookupBtn = document.getElementById("lookup-btn");
+    const backToLookupBtn = document.getElementById("back-to-lookup-btn");
+    
+    const loginView = document.getElementById("status-login-view");
+    const resultView = document.getElementById("status-result-view");
+    const resultName = document.getElementById("result-name");
+    const statusTbody = document.getElementById("status-table-body");
+    const statusPagination = document.getElementById("status-pagination");
+
+    let myComplaints = [];
+    let currentPage = 1;
+    const itemsPerPage = 5;
+
+    // 모달 열기
+    openStatusBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        resetStatusModal();
+        statusModal.style.display = "flex";
+    });
+
+    // 모달 닫기
+    closeStatusBtn.addEventListener("click", () => {
+        statusModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (e) => {
+        if (e.target === statusModal || e.target === successModal) {
+            e.target.style.display = "none";
+        }
+    });
+
+    function resetStatusModal() {
+        document.getElementById("lookup-name").value = "";
+        document.getElementById("lookup-phone").value = "";
+        loginView.style.display = "block";
+        resultView.style.display = "none";
     }
 
-    // ✅ 민원 데이터 전송 함수
-    function sendData(dataToSend) {
-        fetch("http://127.0.0.1:8000/api/submit_complaint", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(dataToSend)
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('서버 응답이 실패했습니다.');
-            return response.json();
-        })
-        .then(data => {
-            console.log("서버 응답:", data);
-            showSuccessModal();  // ✅ 모달 표시
-            form.reset();
-        })
-        .catch(error => {
-            console.error("전송 실패:", error);
-            alert("민원 접수에 실패했습니다. 백엔드 서버가 켜져 있는지 확인하세요.");
+    // 조회 버튼 클릭
+    lookupBtn.addEventListener("click", async () => {
+        const name = document.getElementById("lookup-name").value.trim();
+        const phone = document.getElementById("lookup-phone").value.trim();
+
+        if (!name || !phone) {
+            alert("이름과 전화번호를 입력해주세요.");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/get_all_complaints");
+            if (!response.ok) throw new Error("서버 오류");
+            
+            const allData = await response.json();
+            
+            // 필터링
+            myComplaints = allData.filter(item => item.author === name && item.phone === phone);
+            
+            // 날짜 내림차순 정렬
+            myComplaints.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (myComplaints.length === 0) {
+                alert("조회된 내역이 없습니다.");
+                return;
+            }
+
+            resultName.textContent = name;
+            loginView.style.display = "none";
+            resultView.style.display = "block";
+            
+            currentPage = 1;
+            renderStatusTable(currentPage);
+            renderPagination();
+
+        } catch (error) {
+            console.error(error);
+            alert("데이터 조회 실패");
+        }
+    });
+
+    backToLookupBtn.addEventListener("click", resetStatusModal);
+
+    function renderStatusTable(page) {
+        statusTbody.innerHTML = "";
+        const start = (page - 1) * itemsPerPage;
+        const end = page * itemsPerPage;
+        const pageData = myComplaints.slice(start, end);
+
+        pageData.forEach(item => {
+            const row = document.createElement("tr");
+            
+            let badgeClass = "badge-wait";
+            if (item.status === "신규 접수") badgeClass = "badge-new";
+            else if (item.status.includes("처리 중")) badgeClass = "badge-ing";
+            else if (item.status === "답변 완료") badgeClass = "badge-done";
+
+            row.innerHTML = `
+                <td><span class="${badgeClass}">${item.status}</span></td>
+                <td style="text-align:left;">${item.title}</td>
+                <td>${item.date}</td>
+                <td>${item.dept === "배정 안 함" ? "-" : item.dept}</td>
+            `;
+            statusTbody.appendChild(row);
         });
     }
 
-    function validateForm() {
-        const author = document.getElementById("author").value;
-        const phone = document.getElementById("phone").value;
-        const category = document.getElementById("category").value;
-        const title = document.getElementById("title").value;
-        const content = document.getElementById("content").value;
-        const agree = document.getElementById("agree").checked;
-        
-        if (author.trim() === "" || phone.trim() === "") {
-             alert("신청인 정보 (작성자, 전화번호)를 모두 입력해주세요.");
-             return false;
+    function renderPagination() {
+        statusPagination.innerHTML = "";
+        const totalPages = Math.ceil(myComplaints.length / itemsPerPage);
+        if (totalPages <= 1) return;
+
+        for (let i = 1; i <= totalPages; i++) {
+            const link = document.createElement("a");
+            link.href = "#";
+            link.textContent = i;
+            if (i === currentPage) link.classList.add("active");
+            link.addEventListener("click", (e) => {
+                e.preventDefault();
+                currentPage = i;
+                renderStatusTable(currentPage);
+                renderPagination();
+            });
+            statusPagination.appendChild(link);
         }
-        if (category === "" || title.trim() === "" || content.trim() === "") {
-             alert("필수 입력 항목 (유형, 제목, 내용)을 모두 채워주세요.");
-             return false;
-        }
-        if (!agree) {
-            alert("개인정보 수집 및 이용에 동의해야 합니다.");
-            return false;
-        }
-        return true; 
     }
 });
