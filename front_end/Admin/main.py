@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
@@ -47,6 +48,19 @@ COLLECTION_COMPLAINT = "complaint"
 COLLECTION_AGENT = "agent"
 COLLECTION_AIANSWER = "ai_answer"
 COLLECTION_AISUMMARY = "ai_summary"
+
+# ✅ User 페이지 경로 설정
+USER_PAGE_PATH = "/home/hwkang/UpstageHackathon/front_end/User"
+
+# ✅ User 페이지 정적 파일 마운트 (CSS, JS)
+app.mount("/user/static", StaticFiles(directory=USER_PAGE_PATH), name="user_static")
+
+# ✅ User 페이지 메인 라우트
+@app.get("/")
+@app.get("/user")
+async def serve_user_page():
+    """User 민원 접수 페이지 제공"""
+    return FileResponse(os.path.join(USER_PAGE_PATH, "index.html"))
 
 @app.on_event("startup")
 def startup_event():
