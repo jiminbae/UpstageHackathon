@@ -108,10 +108,14 @@ body {
 .form-group { border: none; padding: 0; margin-bottom: 25px; }
 label { 
     display: block; 
-    margin-bottom: 8px; 
+    margin-bottom: 6px; 
+    margin-top: 25px; /* 각 label 위에 여백 추가 */
     font-weight: 600; 
     color: var(--text-medium); 
     font-size: 14px;
+}
+label:first-of-type { 
+    margin-top: 0; /* 첫 번째 label은 위 여백 제거 */
 }
 .required { color: #e74c3c; margin-left: 2px; font-weight: bold; }
 
@@ -126,10 +130,27 @@ input[type="text"], input[type="tel"], select, textarea {
     background-color: #fff;
     outline: none;
     transition: border 0.2s;
+    font-family: 'Noto Sans KR', sans-serif; /* 폰트 명시적으로 추가 */
 }
+
+/* select 드롭다운 화살표 커스터마이징 */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center; /* 오른쪽 여백 14px */
+    background-size: 10px;
+    padding-right: 40px; /* 화살표 공간 확보 */
+}
+
 input:focus, select:focus, textarea:focus { border-color: var(--primary-blue); }
 textarea { resize: vertical; }
-input::placeholder { color: #bbb; }
+input::placeholder, textarea::placeholder { 
+    color: #bbb; 
+    font-family: 'Noto Sans KR', sans-serif; /* placeholder 폰트도 통일 */
+}
 
 /* 파일 업로드 */
 .file-input-wrapper { margin-top: 5px; }
@@ -190,12 +211,16 @@ input[type="file"] { border: none; padding-left: 0; }
     transform: scale(0.9);
     animation: scaleUp 0.3s ease forwards;
 }
-.status-content { max-width: 650px; padding: 0; overflow: hidden; }
+.status-content { 
+    max-width: 850px; /* 650px → 850px로 확대 */
+    padding: 0; 
+    overflow: hidden; 
+}
 
 /* 모달 헤더 */
 .modal-header {
     background-color: #f8f9fa;
-    padding: 20px 30px;
+    padding: 25px 40px; /* 20px 30px → 25px 40px로 확대 */
     border-bottom: 1px solid var(--border-lighter);
     display: flex;
     justify-content: space-between;
@@ -210,7 +235,9 @@ input[type="file"] { border: none; padding-left: 0; }
 .close-modal:hover { color: #333; }
 
 /* 모달 바디 */
-.modal-body { padding: 30px; }
+.modal-body { 
+    padding: 40px; /* 30px → 40px로 확대 */
+}
 
 /* 모던 인풋 스타일 (모달용) */
 .input-wrapper { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
