@@ -3,33 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>민원 접수</title>
+    <title>OO기관 민원 접수</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <header class="colorful-header">
-            <h1>OO기관 민원 접수</h1>
-            <p>소중한 의견을 듣겠습니다.</p>
+        <header class="main-header">
+            <span class="deco-dot dot-yellow"></span>
+            <span class="deco-dot dot-blue"></span>
+
+            <div class="title-area">
+                <h1>OO기관 민원 접수</h1>
+                <p>소중한 의견을 듣겠습니다.</p>
+            </div>
+
+            <div class="header-bottom">
+                <div class="line"></div>
+                <button id="open-status-modal-btn" class="btn-status-check">
+                    접수 현황
+                </button>
+            </div>
         </header>
 
         <main>
-            <form id="complaint-form" class="complaint-form modern-form">
+            <form id="complaint-form" class="complaint-form">
                 
-                <fieldset class="form-group auth-section">
-                    <legend class="section-legend">1. 신청인 정보</legend>
-                    
-                    <label for="author">작성자 <span class="required-star">*</span></label>
+                <div class="section-header">
+                    <h2>1. 신청인 정보</h2>
+                </div>
+                <fieldset class="form-group">
+                    <label for="author">작성자 <span class="required">*</span></label>
                     <input type="text" id="author" name="author" placeholder="작성자 성명을 입력하세요" required>
 
-                    <label for="phone">전화번호 <span class="required-star">*</span></label>
+                    <label for="phone">전화번호 <span class="required">*</span></label>
                     <input type="text" id="phone" name="phone" placeholder="'-' 없이 숫자만 입력 (예: 01012345678)" required>
                 </fieldset>
 
+                <div class="section-header">
+                    <h2>2. 민원 내용</h2>
+                </div>
                 <fieldset class="form-group">
-                    <legend class="section-legend">2. 민원 내용</legend>
-                    
-                    <label for="category">민원 유형 <span class="required-star">*</span></label>
+                    <label for="category">민원 유형 <span class="required">*</span></label>
                     <select id="category" name="category" required>
                         <option value="">유형을 선택하세요</option>
                         <option value="policy_suggestion">정책 제안 💡</option>
@@ -39,46 +54,90 @@
                         <option value="other">기타 문의 ❓</option>
                     </select>
 
-                    <label for="title">제목 <span class="required-star">*</span></label>
+                    <label for="title">제목 <span class="required">*</span></label>
                     <input type="text" id="title" name="title" placeholder="민원 제목을 입력하세요 (예: 도로 파손 신고)" required>
 
-                    <label for="content">상세 내용 <span class="required-star">*</span></label>
-                    <textarea id="content" name="content" rows="15" placeholder="민원 내용을 상세하고 명확하게 작성해주세요." required></textarea>
+                    <label for="content">상세 내용 <span class="required">*</span></label>
+                    <textarea id="content" name="content" rows="10" placeholder="민원 내용을 상세하고 명확하게 작성해주세요." required></textarea>
 
                     <label for="attachment">첨부 파일</label>
-                    <input type="file" id="attachment" name="attachment">
-                    <small class="file-info-text">* 10MB 이하의 HWP, PDF, JPG, PNG 파일만 첨부 가능합니다.</small>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="attachment" name="attachment">
+                    </div>
                 </fieldset>
 
-                <fieldset class="form-group agreement">
-                    <legend class="section-legend">3. 개인정보 수집 및 이용 동의 <span class="required-star">*</span></legend>
+                <div class="section-header">
+                    <h2>3. 개인정보 수집 및 이용 동의</h2>
+                </div>
+                <fieldset class="form-group">
                     <div class="agreement-box">
-                        <p>「개인정보보호법」 제15조 및 제22조에 따라 민원 처리를 위해 다음과 같이 개인정보를 수집 및 이용합니다.</p>
-                        <ul>
-                            <li>수집 항목: 성명, 연락처, 민원 내용 내 개인정보</li>
-                            <li>수집 목적: 민원 접수 및 처리, 처리 결과 회신, 통계 분석</li>
-                            <li>보유 및 이용 기간: 민원 처리 완료 후 3년</li>
-                        </ul>
+                        <p>민원 처리를 위해 성명, 연락처를 수집하며 결과 회신 및 통계 목적으로 3년간 보관합니다.</p>
                     </div>
                     <div class="checkbox-container">
                         <input type="checkbox" id="agree" name="agree" required>
-                        <label for="agree">위 개인정보 수집 및 이용에 동의합니다.</label>
+                        <label for="agree">개인정보 수집 및 이용에 동의합니다.</label>
                     </div>
                 </fieldset>
 
                 <div class="submit-area">
-                    <button type="submit" class="btn submit-btn primary-btn large-btn">민원 제출하기</button>
+                    <button type="submit" class="btn-submit">민원 제출하기</button>
                 </div>
             </form>
         </main>
     </div>
 
-    <div id="success-modal-overlay" class="success-modal-overlay">
-        <div class="success-modal-content">
-            <span class="success-modal-icon">🎉</span>
+    <div id="success-modal-overlay" class="modal-overlay">
+        <div class="modal-content center-text">
+            <div class="icon-box">🎉</div>
             <h3>접수 완료</h3>
             <p>소중한 의견을 제출해주셔서 감사합니다.</p>
-            <button id="close-success-modal" class="btn primary-btn">확인</button>
+            <button id="close-success-modal" class="btn-primary">확인</button>
+        </div>
+    </div>
+
+    <div id="status-modal" class="modal-overlay">
+        <div class="modal-content status-content">
+            <header class="modal-header">
+                <div class="modal-title-group">
+                    <h3>나의 민원 조회</h3>
+                    <p>접수된 민원의 처리 현황을 확인하세요.</p>
+                </div>
+                <button class="close-modal" id="close-status-modal-btn">&times;</button>
+            </header>
+    
+            <div class="modal-body">
+                <div id="status-login-view">
+                    <div class="input-wrapper">
+                        <label>이름</label>
+                        <input type="text" id="lookup-name" placeholder="홍길동" class="modern-input">
+                        <label>전화번호</label>
+                        <input type="tel" id="lookup-phone" placeholder="01012345678" class="modern-input">
+                    </div>
+                    <button id="lookup-btn" class="btn-full-primary">내역 조회</button>
+                </div>
+    
+                <div id="status-result-view" style="display: none;">
+                    <div class="result-top-bar">
+                        <span class="user-badge"><i class="fas fa-user"></i> <span id="result-name"></span>님</span>
+                        <button id="back-to-lookup-btn" class="btn-text-icon"><i class="fas fa-undo"></i> 다시 조회</button>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="status-table">
+                            <thead>
+                                <tr>
+                                    <th>상태</th>
+                                    <th>제목</th>
+                                    <th>접수일</th>
+                                    <th>담당부서</th>
+                                </tr>
+                            </thead>
+                            <tbody id="status-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="status-pagination"></div>
+                </div>
+            </div>
         </div>
     </div>
 
