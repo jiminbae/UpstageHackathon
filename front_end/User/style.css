@@ -132,6 +132,19 @@ input[type="text"], input[type="tel"], select, textarea {
     transition: border 0.2s;
     font-family: 'Noto Sans KR', sans-serif; /* 폰트 명시적으로 추가 */
 }
+
+/* select 드롭다운 화살표 커스터마이징 */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center; /* 오른쪽 여백 14px */
+    background-size: 10px;
+    padding-right: 40px; /* 화살표 공간 확보 */
+}
+
 input:focus, select:focus, textarea:focus { border-color: var(--primary-blue); }
 textarea { resize: vertical; }
 input::placeholder, textarea::placeholder { 
