@@ -19,7 +19,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const allComplaintsTbody = document.getElementById("all-complaints-tbody");
     const paginationControls = document.getElementById("pagination-controls");
     const totalComplaintsCount = document.getElementById("total-complaints-count");
-    const pageDashboard = document.getElementById("page-all-complaints");
+    // Correct page element references
+    const pageDashboard = document.getElementById("page-dashboard");
+    const pageAllComplaints = document.getElementById("page-all-complaints");
     const navDashboard = document.getElementById("nav-dashboard");
     const navAllComplaints = document.getElementById("nav-all-complaints");
     const mainTitle = document.getElementById("main-title");
