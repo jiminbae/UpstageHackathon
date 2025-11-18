@@ -108,10 +108,14 @@ body {
 .form-group { border: none; padding: 0; margin-bottom: 25px; }
 label { 
     display: block; 
-    margin-bottom: 8px; 
+    margin-bottom: 6px; 
+    margin-top: 25px; /* 각 label 위에 여백 추가 */
     font-weight: 600; 
     color: var(--text-medium); 
     font-size: 14px;
+}
+label:first-of-type { 
+    margin-top: 0; /* 첫 번째 label은 위 여백 제거 */
 }
 .required { color: #e74c3c; margin-left: 2px; font-weight: bold; }
 
@@ -126,10 +130,14 @@ input[type="text"], input[type="tel"], select, textarea {
     background-color: #fff;
     outline: none;
     transition: border 0.2s;
+    font-family: 'Noto Sans KR', sans-serif; /* 폰트 명시적으로 추가 */
 }
 input:focus, select:focus, textarea:focus { border-color: var(--primary-blue); }
 textarea { resize: vertical; }
-input::placeholder { color: #bbb; }
+input::placeholder, textarea::placeholder { 
+    color: #bbb; 
+    font-family: 'Noto Sans KR', sans-serif; /* placeholder 폰트도 통일 */
+}
 
 /* 파일 업로드 */
 .file-input-wrapper { margin-top: 5px; }
