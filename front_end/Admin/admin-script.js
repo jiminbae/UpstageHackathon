@@ -190,11 +190,16 @@ document.addEventListener("DOMContentLoaded", function() {
             warningContent = '🚫'; // 스팸만
         }
 
+        let attachmentIcon = "";
+        if (item.attachment && item.attachment !== "null" && item.attachment.trim() !== "") {
+            attachmentIcon = ' <span title="첨부파일 있음">📎</span>';
+        }
+
         row.innerHTML = `
             <td><span class="status ${statusClass}">${item.status}</span></td>
             <td>${displayId}</td> 
             <td>${displayCategory}</td>
-            <td class="title-cell">${(item.title || "제목 없음")}</td>
+            <td class="title-cell">${(item.title || "제목 없음")}${attachmentIcon}</td>
             <td>${applicantMasked}</td>
             <td>${item.date}</td>
             <td><span class="dept ${deptClass}">${displayDept}</span></td>
