@@ -4,6 +4,62 @@ document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("complaint-form");
     const successModal = document.getElementById("success-modal-overlay");
     const closeSuccessBtn = document.getElementById("close-success-modal");
+    const fileInput = document.getElementById("attachment");
+    
+    let uploadedImageUrl = null; // 업로드된 이미지 URL 저장
+
+    // ✅ 파일 선택 시 즉시 업로드
+    fileInput.addEventListener("change", async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // 파일 크기 검증 (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert("파일 크기는 5MB 이하여야 합니다.");
+            fileInput.value = "";
+            return;
+        }
+
+        // 이미지 파일 검증
+        if (!file.type.startsWith('image/')) {
+            alert("이미지 파일만 업로드 가능합니다.");
+            fileInput.value = "";
+            return;
+        }
+
+        // FormData로 파일 전송
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await fetch("/api/upload_image", {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                uploadedImageUrl = result.image_url;
+                console.log("✅ 이미지 업로드 성공:", uploadedImageUrl);
+                
+                // 파일명 표시 (선택사항)
+                const fileName = file.name;
+                const fileLabel = document.querySelector('label[for="attachment"]');
+                if (fileLabel) {
+                    fileLabel.textContent = `첨부 파일 (${fileName})`;
+                }
+            } else {
+                alert("이미지 업로드에 실패했습니다.");
+                fileInput.value = "";
+                uploadedImageUrl = null;
+            }
+        } catch (error) {
+            console.error("이미지 업로드 오류:", error);
+            alert("이미지 업로드 중 오류가 발생했습니다.");
+            fileInput.value = "";
+            uploadedImageUrl = null;
+        }
+    });
 
     form.addEventListener("submit", async function(e) {
         e.preventDefault();
@@ -14,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
             category: document.getElementById("category").value,
             title: document.getElementById("title").value,
             content: document.getElementById("content").value,
-            attachment: "null", 
+            attachment: uploadedImageUrl || null, // ✅ 업로드된 이미지 URL 전송
             date: new Date().toISOString().split('T')[0],
             status: "신규 접수",
             dept: "배정 안 함",
@@ -31,6 +87,13 @@ document.addEventListener("DOMContentLoaded", function() {
             if (response.ok) {
                 successModal.style.display = "flex"; 
                 form.reset();
+                uploadedImageUrl = null; // ✅ 초기화
+                
+                // 파일 라벨 원래대로
+                const fileLabel = document.querySelector('label[for="attachment"]');
+                if (fileLabel) {
+                    fileLabel.textContent = "첨부 파일";
+                }
             } else {
                 alert("접수 중 오류가 발생했습니다.");
             }
